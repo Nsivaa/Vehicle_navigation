@@ -1,2 +1,2 @@
 husky_gazebo_plugins
--DCATKIN_DEVEL_PREFIX=/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/install -G Unix Makefiles
+-DCATKIN_DEVEL_PREFIX=/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/install -G Unix Makefiles

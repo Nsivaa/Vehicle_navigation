@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/src/husky_gazebo_plugins/src/husky_plugin.cpp" "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/husky_gazebo_plugins/CMakeFiles/husky_gazebo_plugins.dir/src/husky_plugin.cpp.o"
+  "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/src/husky_gazebo_plugins/src/husky_plugin.cpp" "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/husky_gazebo_plugins/CMakeFiles/husky_gazebo_plugins.dir/src/husky_plugin.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -30,8 +30,8 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/include"
-  "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/src/husky_gazebo_plugins/include"
+  "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/include"
+  "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/src/husky_gazebo_plugins/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/gazebo-11"

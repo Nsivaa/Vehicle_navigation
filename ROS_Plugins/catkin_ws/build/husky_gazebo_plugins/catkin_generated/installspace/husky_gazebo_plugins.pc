@@ -1,4 +1,4 @@
-prefix=/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/install
+prefix=/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/install
 
 Name: husky_gazebo_plugins
 Description: Description of husky_gazebo_plugins

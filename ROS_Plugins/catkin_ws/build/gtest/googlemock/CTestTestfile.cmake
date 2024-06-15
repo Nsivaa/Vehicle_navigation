@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
 # Source directory: /usr/src/googletest/googlemock
-# Build directory: /home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/gtest/googlemock
+# Build directory: /home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/gtest/googlemock
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

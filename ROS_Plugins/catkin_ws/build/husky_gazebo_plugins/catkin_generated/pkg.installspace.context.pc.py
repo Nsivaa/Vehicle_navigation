@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "${prefix}/include".split(';') if "${prefix}/i
 PROJECT_CATKIN_DEPENDS = "gazebo_ros;gazebo_msgs;roscpp;message_runtime;std_msgs;geometry_msgs;nav_msgs;sensor_msgs".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "-lhusky_gazebo_plugins".split(';') if "-lhusky_gazebo_plugins" != "" else []
 PROJECT_NAME = "husky_gazebo_plugins"
-PROJECT_SPACE_DIR = "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/install"
+PROJECT_SPACE_DIR = "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/install"
 PROJECT_VERSION = "0.0.3"

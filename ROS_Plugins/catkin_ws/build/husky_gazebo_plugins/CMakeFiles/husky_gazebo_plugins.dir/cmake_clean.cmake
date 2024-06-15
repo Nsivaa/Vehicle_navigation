@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/libhusky_gazebo_plugins.pdb"
-  "/home/nsiva/rob_project/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/libhusky_gazebo_plugins.so"
+  "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/libhusky_gazebo_plugins.pdb"
+  "/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/libhusky_gazebo_plugins.so"
   "CMakeFiles/husky_gazebo_plugins.dir/src/husky_plugin.cpp.o"
 )
 
