@@ -131,6 +131,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/gtest/cmake_install.cmake")
+  include("/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/navigation/cmake_install.cmake")
   include("/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build/husky_gazebo_plugins/cmake_install.cmake")
 
 endif()

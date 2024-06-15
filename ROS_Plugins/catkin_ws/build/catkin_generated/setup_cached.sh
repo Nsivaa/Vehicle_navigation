@@ -8,7 +8,9 @@
 
 # modified environment variables
 export CMAKE_PREFIX_PATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH='/opt/ros/noetic/lib:/usr/lib/yarp'
+export LD_LIBRARY_PATH='/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib:/opt/ros/noetic/lib:/usr/lib/yarp'
+export PKG_CONFIG_PATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build'
+export PYTHONPATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/python3/dist-packages:$PYTHONPATH"
 export ROSLISP_PACKAGE_DIRECTORIES='/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/share/common-lisp'
 export ROS_PACKAGE_PATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/src:$ROS_PACKAGE_PATH"
