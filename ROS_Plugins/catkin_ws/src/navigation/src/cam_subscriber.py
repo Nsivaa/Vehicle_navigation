@@ -10,8 +10,10 @@ class CameraProcessor:
     def __init__(self, rate):
         self.bridge = CvBridge()
         rospy.init_node('cam_subscriber', anonymous = True)
+
+        # we don't need queues since we only care about the most recent image
         self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
-        self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback)
+        self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
         self.rate = rospy.Rate(rate)
 
 
@@ -27,6 +29,7 @@ class CameraProcessor:
             
         except CvBridgeError as e:
             print(e)
+            
         cv2.imshow("Image window", cv_image)
         cv2.imwrite("./image.jpg", cv_image)
         # process image
