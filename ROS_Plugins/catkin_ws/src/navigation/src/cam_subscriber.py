@@ -9,23 +9,20 @@ class CameraProcessor:
     
     def __init__(self, rate):
         self.bridge = CvBridge()
+        rospy.init_node('cam_subscriber', anonymous = True)
+
         self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
 
         self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
 
 
-        rospy.init_node('cam_subscriber', anonymous = True)
 
         self.rate = rospy.Rate(rate)
-        rospy.spin()
 
 
     def publish(self, message):
         self.pub.publish(message)
         rospy.loginfo(message)
-
-        self.rate.sleep()
-        rospy.spin()
 
     def callback(self, data):
 
@@ -38,11 +35,10 @@ class CameraProcessor:
         # process image
         # get velocity
         linear = Vector3(1.0, 0.0, 0.0)
-        angular = Vector3(0.0, 0.0, 1.0)
+        angular = Vector3(0.0, 0.0, 0.0)
         velocity = Twist(linear, angular)
         rospy.loginfo(velocity)
         self.publish(velocity)
-        rospy.spin()
 
 
 def process(rate):
