@@ -23,7 +23,8 @@ class CameraProcessor:
     def publish(self, message):
         self.pub.publish(message)
         rospy.loginfo(message)
-
+        self.rate.sleep()
+        
     def callback(self, data):
 
         try:
