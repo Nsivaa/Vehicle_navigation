@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 import rospy
-from std_msgs.msg import String
+from geometry_msgs.msg import Twist, Vector3
 
 def talker(hz = 10):
     rospy.init_node('vel_publisher', anonymous=True)
-    pub = rospy.Publisher('/husky_model/husky/cmd_vel', String, queue_size=10)
+    pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=10)
     rate = rospy.Rate(hz) # 10hz
     while not rospy.is_shutdown():
-        hello_str = "hello world %s" % rospy.get_time()
-        rospy.loginfo(hello_str)
-        pub.publish(hello_str)
+        linear = Vector3(1.0, 0.0, 0.0)
+        angular = Vector3(0.0, 0.0, 1.0)
+        velocity = Twist(linear, angular)        
+        rospy.loginfo(velocity)
+        pub.publish(velocity)
         rate.sleep()
 
 if __name__ == '__main__':

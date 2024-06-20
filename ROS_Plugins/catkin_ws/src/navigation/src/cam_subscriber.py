@@ -8,6 +8,8 @@ class CameraProcessor:
     
     def __init__(self):
         self.bridge = CvBridge()
+        rospy.init_node('cam_subscriber', anonymous = True)
+
         self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
 
     def callback(self, data):
@@ -21,7 +23,6 @@ class CameraProcessor:
 
 def listener():
     cp = CameraProcessor()
-    rospy.init_node('cam_subscriber', anonymous = True)
     rospy.spin()
 
 if __name__ == '__main__':
