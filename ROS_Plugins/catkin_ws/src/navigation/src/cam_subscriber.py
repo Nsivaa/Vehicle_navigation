@@ -10,13 +10,8 @@ class CameraProcessor:
     def __init__(self, rate):
         self.bridge = CvBridge()
         rospy.init_node('cam_subscriber', anonymous = True)
-
         self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
-
-        self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
-
-
-
+        self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback)
         self.rate = rospy.Rate(rate)
 
 
@@ -24,17 +19,19 @@ class CameraProcessor:
         self.pub.publish(message)
         rospy.loginfo(message)
         self.rate.sleep()
-        
-    def callback(self, data):
 
+    def callback(self, data):
         try:
-            # passthrough maintains the same encoding of the starting image
-            cv_image = self.bridge.imgmsg_to_cv2(data, desired_encoding='passthrough') 
+            # we need to convert the image to correct color format
+            cv_image = self.bridge.imgmsg_to_cv2(data, desired_encoding='bgr8') 
+            
         except CvBridgeError as e:
             print(e)
         cv2.imshow("Image window", cv_image)
+        cv2.imwrite("./image.jpg", cv_image)
         # process image
         # get velocity
+        
         linear = Vector3(1.0, 0.0, 0.0)
         angular = Vector3(0.0, 0.0, 0.0)
         velocity = Twist(linear, angular)
