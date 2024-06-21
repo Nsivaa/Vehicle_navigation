@@ -8,27 +8,30 @@ import cv2
 import numpy as np
 
 # Constants
-LOWER_RED = np.array([10, 10, 80]) # lower bound for red masking
-UPPER_RED = np.array([255, 255, 130]) # upper bound for red masking
+BGR_LOWER_RED = np.array([10, 10, 80]) # lower bound for red masking
+BGR_UPPER_RED = np.array([255, 255, 130]) # upper bound for red masking
+HSV_LOWER_RED = np.array([155,25,0])
+HSV_UPPER_RED = np.array([179,255,255])
 IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
-IMAGE_X_CENTER = IMAGE_WIDTH / 2
-IMAGE_Y_CENTER = IMAGE_HEIGHT / 2
-SMALL_CONTOUR_AREA = 400.0 # area of red logo next to camera is around 370
-X_SHIFT_EPSILON = 40 # error tolerance for x_shift
+IMAGE_X_CENTER = int(IMAGE_WIDTH / 2)
+IMAGE_Y_CENTER = int(IMAGE_HEIGHT / 2)
+SMALL_CONTOUR_AREA = 4.0 # area of red logo next to camera is around 370
+X_SHIFT_EPSILON = 20 # error tolerance for x_shift
 
 class CameraProcessor:
     
-    def __init__(self, rate):
+    def __init__(self, rate, mode):
         self.bridge = CvBridge()
         rospy.init_node('cam_subscriber', anonymous = True)
 
         # we don't need queues since we only care about the most recent image
-        self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
+        self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=10)
         self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
         self.rate = rospy.Rate(rate)
         self.i = 0
         self.save_every = 10
+        self.mode = mode
 
     def publish(self, message):
         self.pub.publish(message)
@@ -49,40 +52,65 @@ class CameraProcessor:
 
     def get_velocity(self, image):
         shift = self.find_x_shift(image)
-        print(shift)
+        print(f"shift: {shift}")
 
-        if shift == False or shift < 0:
+        if shift == False:
             return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # turn left
         if abs(shift) < X_SHIFT_EPSILON:
             return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
         if shift > 0:
             return Twist(Vector3(0, 0, 0), Vector3(0, 0, -1)) # go right
-
+        if shift < 0:
+            return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # go left
+        
     def find_x_shift(self, image):
-        blurred = cv2.GaussianBlur(image, (5, 5), 0) # reduces noise and makes detection more accurate
-        mask_red = cv2.inRange(blurred, LOWER_RED, UPPER_RED)
+
+        if self.mode == 'bgr':  
+            LOWER_RED = BGR_LOWER_RED
+            UPPER_RED = BGR_UPPER_RED
+            blurred = cv2.GaussianBlur(image, (5, 5), 0) # reduces noise and makes detection more accurate
+            mask_red = cv2.inRange(blurred, LOWER_RED, UPPER_RED)
+            contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        elif self.mode == 'hsv':
+            hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+            # Define the range for the red color in HSV space
+            lower_red_1 = np.array([0, 100, 100])
+            upper_red_1 = np.array([10, 255, 255])
+            lower_red_2 = np.array([160, 100, 100])
+            upper_red_2 = np.array([180, 255, 255])
+
+            # Create masks for the red color
+            mask1 = cv2.inRange(hsv_image, lower_red_1, upper_red_1)
+            mask2 = cv2.inRange(hsv_image, lower_red_2, upper_red_2)
+            mask_red = cv2.bitwise_or(mask1, mask2)
+
         contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        c = max(contours, key = cv2.contourArea) # largest contour 
+        try:
+            c = max(contours, key = cv2.contourArea) # largest contour 
+        except ValueError:
+            return False
         if cv2.contourArea(c) < SMALL_CONTOUR_AREA:
             return False
         else:        
-
-            if self.i % self.save_every == 0:
-                cv2.drawContours(image, c, -1, (0, 255, 0), 1)
-                filename = str(rospy.get_time()) + ".jpg"
-                path = "../images/" + filename
-                cv2.imwrite(path, image)
-
+            print(f"area: {cv2.contourArea(c)}")
             M = cv2.moments(c)
             if M['m00'] != 0: # finds center of contour
                 cx = int(M['m10']/M['m00'])
                 cy = int(M['m01']/M['m00'])
             print(f"x: {cx} y: {cy}")
+            image = cv2.circle(image, (cx, cy), radius=1, color=(200, 200, 200), thickness=-1)
+            image = cv2.circle(image, (IMAGE_X_CENTER, IMAGE_Y_CENTER), radius=1, color=(255, 200, 0), thickness=-1)
+            if self.i % self.save_every == 0:
+                cv2.drawContours(image, c, -1, (0, 255, 0), 1)
+                filename = str(rospy.get_time()) + ".jpg"
+                path = "../images/" + filename
+                cv2.imwrite(path, image)
             return cx - IMAGE_X_CENTER # returns the difference between the center of the image and the center of the red light
 
-def process(rate):
-    cp = CameraProcessor(rate)
+def process(rate, mode):
+    cp = CameraProcessor(rate, mode)
     rospy.spin()
 
 if __name__ == '__main__':
-    process(rate = 10)
+    process(rate = 10, mode = 'hsv')
