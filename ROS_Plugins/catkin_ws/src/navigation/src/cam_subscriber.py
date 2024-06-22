@@ -88,8 +88,8 @@ class CameraProcessor:
             cy = int(M['m01']/M['m00'])
         shift = cx - IMAGE_X_CENTER
         if self.debug:
-            image = cv2.circle(image, (cx, cy), radius=1, color=(200, 200, 200), thickness=-1)
-            image = cv2.circle(image, (IMAGE_X_CENTER, IMAGE_Y_CENTER), radius=1, color=(255, 200, 0), thickness=-1)
+            image = cv2.circle(image, (cx, cy), radius=2, color=(200, 200, 200), thickness=-1)
+            image = cv2.circle(image, (IMAGE_X_CENTER, IMAGE_Y_CENTER), radius=2, color=(255, 200, 0), thickness=-1)
             image = add_text(image, f"area: {area}, shift: {shift}")
             self.i += 1
 

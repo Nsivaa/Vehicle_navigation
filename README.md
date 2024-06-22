@@ -1,3 +1,5 @@
+
+
 **INSTALLATION**
 
 - Copy the content of the Models directory to $HOME/.gazebo/models (create it if necessary)
@@ -12,8 +14,12 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
   ```
 **RUNNING**
 
+- Run the catkin setup script for every terminal instance
+  ``` {.bash}
+      source catkin_ws/devel/setup.bash
+      ```
+    
 - Start roscore
-  
     ``` {.bash}
     roscore & sleep 1
     rosparam set use_sim_time true # use gazebo simulated clock as ROS Time
@@ -22,18 +28,17 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
 - Run gazebo
     ``` {.bash}
     rosrun gazebo_ros gzserver --verbose <PATH TO world sdf file>
-    gzclient --verbose # in a different terminal
+    gzclient --verbose # in a new terminal instance
     ```
 
-- Run the SMACH State Machines that switch the lights from blue to red (and vice-versa).
+- Run the SMACH State Machines that switch the lights from blue to red (and vice-versa) in a new terminal instance.
     ``` {.bash}
-    python3 -m sm.light_switcher # ctrl-c to terminate the scripts
+    python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
     ```
-
-The robot can be velocity controlled by publishing on */husky_model/husky/cmd_vel* topic (rostopic list to show other available topics)
-
-Camera images are published on */husky_model/husky/camera*
-
+- Run the cam_publisher node in a new terminal instance
+  ``` {.bash}
+      rosrun navigation cam_subscriber.py
+  ```
 
 **GOAL**
 

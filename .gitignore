@@ -1,3 +1,5 @@
 *.pyc
 /__pycache__/
-cv.ipynb
+./cv.ipynb
+ROS_Plugins/catkin_ws/src/navigation/images
+ROS_Plugins/catkin_ws/src/navigation/contour_images
