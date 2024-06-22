@@ -16,8 +16,8 @@ IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
 IMAGE_X_CENTER = int(IMAGE_WIDTH / 2)
 IMAGE_Y_CENTER = int(IMAGE_HEIGHT / 2)
-SMALL_CONTOUR_AREA = 4.0 # area of red logo next to camera is around 370
-X_SHIFT_EPSILON = 20 # error tolerance for x_shift
+SMALL_CONTOUR_AREA = 100.0 # area of red logo next to camera is around 370
+X_SHIFT_EPSILON = 10 # error tolerance for x_shift
 
 class CameraProcessor:
     
@@ -26,7 +26,7 @@ class CameraProcessor:
         rospy.init_node('cam_subscriber', anonymous = True)
 
         # we don't need queues since we only care about the most recent image
-        self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=10)
+        self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
         self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
         self.rate = rospy.Rate(rate)
         self.i = 0
@@ -54,8 +54,11 @@ class CameraProcessor:
         shift = self.find_x_shift(image)
         print(f"shift: {shift}")
 
+        # ADD CONTROL ON STUCK?
+
         if shift == False:
             return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # turn left
+        
         if abs(shift) < X_SHIFT_EPSILON:
             return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
         if shift > 0:
@@ -64,7 +67,6 @@ class CameraProcessor:
             return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # go left
         
     def find_x_shift(self, image):
-
         if self.mode == 'bgr':  
             LOWER_RED = BGR_LOWER_RED
             UPPER_RED = BGR_UPPER_RED
@@ -86,31 +88,45 @@ class CameraProcessor:
             mask_red = cv2.bitwise_or(mask1, mask2)
 
         contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        area = None
+
         try:
             c = max(contours, key = cv2.contourArea) # largest contour 
+            area = cv2.contourArea(c)
+            if area < SMALL_CONTOUR_AREA:
+                return False
         except ValueError:
             return False
-        if cv2.contourArea(c) < SMALL_CONTOUR_AREA:
-            return False
-        else:        
-            print(f"area: {cv2.contourArea(c)}")
-            M = cv2.moments(c)
-            if M['m00'] != 0: # finds center of contour
-                cx = int(M['m10']/M['m00'])
-                cy = int(M['m01']/M['m00'])
-            print(f"x: {cx} y: {cy}")
-            image = cv2.circle(image, (cx, cy), radius=1, color=(200, 200, 200), thickness=-1)
-            image = cv2.circle(image, (IMAGE_X_CENTER, IMAGE_Y_CENTER), radius=1, color=(255, 200, 0), thickness=-1)
-            if self.i % self.save_every == 0:
-                cv2.drawContours(image, c, -1, (0, 255, 0), 1)
-                filename = str(rospy.get_time()) + ".jpg"
-                path = "../images/" + filename
-                cv2.imwrite(path, image)
-            return cx - IMAGE_X_CENTER # returns the difference between the center of the image and the center of the red light
+
+        M = cv2.moments(c)
+        if M['m00'] != 0: # finds center of contour
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+        print(f"x: {cx} y: {cy}")
+        shift = cx - IMAGE_X_CENTER
+        image = cv2.circle(image, (cx, cy), radius=1, color=(200, 200, 200), thickness=-1)
+        image = cv2.circle(image, (IMAGE_X_CENTER, IMAGE_Y_CENTER), radius=1, color=(255, 200, 0), thickness=-1)
+        image = add_text(image, f"area: {area}, shift: {shift}")
+        if self.i % self.save_every == 0:
+            cv2.drawContours(image, c, -1, (0, 255, 0), 1)
+            filename = str(rospy.get_time()) + ".jpg"
+            path = "../images/" + filename
+            cv2.imwrite(path, image)
+        return shift # returns the difference between the center of the image and the center of the red light
 
 def process(rate, mode):
     cp = CameraProcessor(rate, mode)
     rospy.spin()
+
+def add_text(img, text):
+    BLACK = (255,255,255)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_size = 0.5
+    font_color = BLACK
+    font_thickness = 2
+    x,y = 10,10
+    img = cv2.putText(img, text, (x,y), font, font_size, font_color, font_thickness, cv2.LINE_AA)
+    return img
 
 if __name__ == '__main__':
     process(rate = 10, mode = 'hsv')
