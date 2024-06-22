@@ -8,10 +8,11 @@ import cv2
 import numpy as np
 
 # Constants
-BGR_LOWER_RED = np.array([10, 10, 80]) # lower bound for red masking
-BGR_UPPER_RED = np.array([255, 255, 130]) # upper bound for red masking
-HSV_LOWER_RED = np.array([155,25,0])
-HSV_UPPER_RED = np.array([179,255,255])
+
+HSV_LOWER_RED_1 = np.array([0, 100, 100])
+HSV_UPPER_RED_1 = np.array([10, 255, 255])
+HSV_LOWER_RED_2 = np.array([160, 100, 100])
+HSV_UPPER_RED_2 = np.array([180, 255, 255])
 IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
 IMAGE_X_CENTER = int(IMAGE_WIDTH / 2)
@@ -25,17 +26,13 @@ class CameraProcessor:
         self.bridge = CvBridge()
         rospy.init_node('cam_subscriber', anonymous = True)
 
-        # we don't need queues since we only care about the most recent image
+        # we don't need queues since we only care about the most recent data
         self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
         self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
         self.rate = rospy.Rate(rate)
+        self.debug = debug
         self.i = 0
         self.save_every = 10
-        self.debug = debug
-        self.lower_red_1 = np.array([0, 100, 100])
-        self.upper_red_1 = np.array([10, 255, 255])
-        self.lower_red_2 = np.array([160, 100, 100])
-        self.upper_red_2 = np.array([180, 255, 255])
 
     def publish(self, message):
         self.pub.publish(message)
@@ -56,8 +53,7 @@ class CameraProcessor:
         shift = self.find_x_shift(image)
         print(f"shift: {shift}")
 
-        # ADD CONTROL ON STUCK?
-        if shift == False:
+        if shift == False: # no red light found
             return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # turn left
         if abs(shift) < X_SHIFT_EPSILON:
             return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
@@ -67,12 +63,11 @@ class CameraProcessor:
             return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # go left
         
     def find_x_shift(self, image):
-
         hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         # Create masks for the red color
-        mask1 = cv2.inRange(hsv_image, self.lower_red_1, self.upper_red_1)
-        mask2 = cv2.inRange(hsv_image, self.lower_red_2, self.upper_red_2)
+        mask1 = cv2.inRange(hsv_image, HSV_LOWER_RED_1, HSV_UPPER_RED_1)
+        mask2 = cv2.inRange(hsv_image, HSV_LOWER_RED_2, HSV_UPPER_RED_2)
         mask_red = cv2.bitwise_or(mask1, mask2)
 
         contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -100,7 +95,7 @@ class CameraProcessor:
                 cv2.imwrite(path, image)
                 self.i += 1
 
-        return shift # returns the difference between the center of the image and the center of the red light
+        return shift # distance between the center of the image and the center of the red light
 
 def process(rate, debug):
     cp = CameraProcessor(rate, debug)
