@@ -7,9 +7,10 @@ from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
 import sys
+import math 
 
 # Constants
-HSV_LOWER_RED_1 = np.array([0, 100, 100])
+HSV_LOWER_RED_1 = np.array([0, 30, 30])
 HSV_UPPER_RED_1 = np.array([10, 255, 255])
 HSV_LOWER_RED_2 = np.array([160, 100, 100])
 HSV_UPPER_RED_2 = np.array([180, 255, 255])
@@ -58,13 +59,11 @@ class CameraProcessor:
         if abs(shift) < X_SHIFT_EPSILON:
             return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
         if shift > 0:
-            if shift > 100:
-                return Twist(Vector3(0, 0, 0), Vector3(0, 0, -2))
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, -1)) # go right
+            vel = -math.log(shift, 10) # log function to slow down as we get closer to the center
+            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # go right
         if shift < 0:
-            if shift < -100:
-                return Twist(Vector3(0, 0, 0), Vector3(0, 0, 2))
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, 1)) # go left
+            vel = math.log(-shift, 10) # log function to slow down as we get closer to the center
+            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # go left
         
     def find_x_shift(self, image):
         hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -73,14 +72,13 @@ class CameraProcessor:
         mask1 = cv2.inRange(hsv_image, HSV_LOWER_RED_1, HSV_UPPER_RED_1)
         mask2 = cv2.inRange(hsv_image, HSV_LOWER_RED_2, HSV_UPPER_RED_2)
         mask_red = cv2.bitwise_or(mask1, mask2)
-
         contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         try:
             c = max(contours, key = cv2.contourArea) # largest contour 
             area = cv2.contourArea(c)
             if area < SMALL_CONTOUR_AREA:
                 return False
-
+            
         except ValueError:
             return False
 
