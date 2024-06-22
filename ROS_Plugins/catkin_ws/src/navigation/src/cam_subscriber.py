@@ -126,4 +126,4 @@ if __name__ == '__main__':
         else:
             print("Invalid argument. Running without debug mode.")
 
-    process(rate = 20, debug = debug)
+    process(rate = 20, debug = debug) # rate chosen to match the camera's frame rate

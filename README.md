@@ -35,10 +35,11 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
   ``` {.bash}
   python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
   ```
-- Run the cam_publisher node in a new terminal instance
+- Run the cam_publisher node in a new terminal instance. Add -d or --debug flag at the end for debug mode: it will save (one every ten) images in the navigation package directory, in both unprocessed and "contoured" version. 
   ``` {.bash}
-    rosrun navigation cam_subscriber.py
+    rosrun navigation cam_subscriber.py [mode]
   ```
+
 
 **GOAL**
 
