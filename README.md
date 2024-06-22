@@ -20,21 +20,21 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
   ```
     
 - Start roscore
-    ``` {.bash}
-    roscore & sleep 1
-    rosparam set use_sim_time true # use gazebo simulated clock as ROS Time
-    ```
+  ``` {.bash}
+  roscore & sleep 1
+  rosparam set use_sim_time true # use gazebo simulated clock as ROS Time
+  ```
 
 - Run gazebo
-    ``` {.bash}
-    rosrun gazebo_ros gzserver --verbose <PATH TO world sdf file>
-    gzclient --verbose # in a new terminal instance
-    ```
+  ``` {.bash}
+  rosrun gazebo_ros gzserver --verbose <PATH TO world sdf file>
+  gzclient --verbose # in a new terminal instance
+  ```
 
 - Run the SMACH State Machines that switch the lights from blue to red (and vice-versa) in a new terminal instance.
-    ``` {.bash}
-    python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
-    ```
+  ``` {.bash}
+  python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
+  ```
 - Run the cam_publisher node in a new terminal instance
   ``` {.bash}
     rosrun navigation cam_subscriber.py
