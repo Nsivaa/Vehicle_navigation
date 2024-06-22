@@ -37,7 +37,7 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
     ```
 - Run the cam_publisher node in a new terminal instance
   ``` {.bash}
-      rosrun navigation cam_subscriber.py
+    rosrun navigation cam_subscriber.py
   ```
 
 **GOAL**
