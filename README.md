@@ -16,7 +16,7 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
 
 - Run the catkin setup script for every terminal instance
   ``` {.bash}
-      source catkin_ws/devel/setup.bash
+    source catkin_ws/devel/setup.bash
   ```
     
 - Start roscore
