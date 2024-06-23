@@ -12,7 +12,7 @@ import math
 # Constants
 HSV_LOWER_RED_1 = np.array([0, 30, 30])
 HSV_UPPER_RED_1 = np.array([10, 255, 255])
-HSV_LOWER_RED_2 = np.array([160, 100, 100])
+HSV_LOWER_RED_2 = np.array([160, 30, 30])
 HSV_UPPER_RED_2 = np.array([180, 255, 255])
 IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
@@ -60,10 +60,10 @@ class CameraProcessor:
             return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
         if shift > 0:
             vel = -math.log(shift, 10) # log function to slow down as we get closer to the center
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # go right
+            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # turn right
         if shift < 0:
             vel = math.log(-shift, 10) # log function to slow down as we get closer to the center
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # go left
+            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # turn left
         
     def find_x_shift(self, image):
         hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
