@@ -7,10 +7,6 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel:$CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH='/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib:/opt/ros/noetic/lib:/usr/lib/yarp'
-export PKG_CONFIG_PATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PATH='/opt/ros/noetic/bin:/home/nsiva/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Java/jdk-17.0.1/:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/MinGW/bin:/mnt/c/MinGW/msys/1.0/bin:/mnt/c/Users/Alberto/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/JetBrains/PyCharm 2021.3/bin:/mnt/c/adb:/mnt/c/Users/Alberto/AppData/Local/Programs/Python/Python39/:/mnt/c/Users/Alberto/AppData/Local/Programs/Python/Python39/Scripts/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/MySQL/MySQL Shell 8.0/bin/:/mnt/c/Program Files/MySQL/MySQL Server 8.0/bin:/mnt/c/Users/Alberto/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin'
 export PWD='/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/build'
-export PYTHONPATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/lib/python3/dist-packages:$PYTHONPATH"
-export ROSLISP_PACKAGE_DIRECTORIES='/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/devel/share/common-lisp'
-export ROS_PACKAGE_PATH="/home/nsiva/braitenberg_nav_project/ROS_Plugins/catkin_ws/src:$ROS_PACKAGE_PATH"
