@@ -2,12 +2,12 @@
 
 import rospy
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import Twist, Vector3
+from geometry_msgs.msg import Twist
+from navigation.msg import img_result
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
 import sys
-import math 
 
 # Constants
 DEBUG_FOLDER = "./debug/"
@@ -22,7 +22,6 @@ IMAGE_HEIGHT = 240
 IMAGE_X_CENTER = int(IMAGE_WIDTH / 2)
 IMAGE_Y_CENTER = int(IMAGE_HEIGHT / 2)
 SMALL_CONTOUR_AREA = 100.0 # area of red logo next to camera is around 80
-X_SHIFT_EPSILON = 20 # error tolerance for x_shift
 
 class CameraProcessor:
     
@@ -31,7 +30,7 @@ class CameraProcessor:
         rospy.init_node('cam_subscriber', anonymous = True)
 
         # we don't need queues since we only care about the most recent data
-        self.pub = rospy.Publisher('/husky_model/husky/cmd_vel', Twist, queue_size=1)
+        self.pub = rospy.Publisher('/img_result', img_result, queue_size=1)
         self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
         self.rate = rospy.Rate(rate)
         self.debug = debug
@@ -52,27 +51,14 @@ class CameraProcessor:
         except CvBridgeError as e:
             print(e)
 
-        velocity = self.get_velocity(cv_image)
-        self.publish(velocity)
+        red, shift = self.find_x_shift(cv_image)
+        message = img_result(red, shift)
+        self.publish(message)
 
-    def get_velocity(self, image):
-        shift = self.find_x_shift(image)
-        print(f"shift: {shift}")
-
-        if shift == False: # no red light found
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, 3)) # turn left
-        if abs(shift) < X_SHIFT_EPSILON:
-            return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
-        if shift > 0:
-            vel = -math.log(shift, 10) # log function to slow down as we get closer to the center
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # turn right
-        if shift < 0:
-            vel = math.log(-shift, 10) # log function to slow down as we get closer to the center
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, vel)) # turn left
-        
     def find_x_shift(self, image):
         hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
+        red_detected = "no"
+        shift = 0
         # Create masks for the red color
         mask1 = cv2.inRange(hsv_image, HSV_LOWER_RED_1, HSV_UPPER_RED_1)
         mask2 = cv2.inRange(hsv_image, HSV_LOWER_RED_2, HSV_UPPER_RED_2)
@@ -82,10 +68,12 @@ class CameraProcessor:
             c = max(contours, key = cv2.contourArea) # largest contour 
             area = cv2.contourArea(c)
             if area < SMALL_CONTOUR_AREA:
-                return False
-            
+                return red_detected, shift
+            else:
+                red_detected = "yes"
+
         except ValueError:
-            return False
+            return red_detected, shift
 
         M = cv2.moments(c)
         if M['m00'] != 0: # finds center of contour
@@ -105,7 +93,7 @@ class CameraProcessor:
                 filename = self.contour_path + str(rospy.get_time()) + ".jpg"
                 cv2.imwrite(filename, image)
 
-        return shift # distance between the center of the image and the center of the red light
+        return red_detected, shift # distance between the center of the image and the center of the red light
 
 def process(rate, debug):
     cp = CameraProcessor(rate, debug)

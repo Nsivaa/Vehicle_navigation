@@ -1,0 +1,4 @@
+<launch>
+<node name="cam_subscriber" pkg="navigation" type="cam_subscriber.py" output="screen"/>
+<node name="vel_publisher" pkg="navigation" type="vel_publisher.py" output="screen"/>
+</launch>
