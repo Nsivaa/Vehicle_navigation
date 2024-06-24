@@ -10,6 +10,9 @@ import sys
 import math 
 
 # Constants
+DEBUG_FOLDER = "./debug/"
+RAW_IMAGES_FOLDER = DEBUG_FOLDER + "raw_images/"
+CONTOUR_IMAGES_FOLDER = DEBUG_FOLDER + "contour_images/"
 HSV_LOWER_RED_1 = np.array([0, 30, 30])
 HSV_UPPER_RED_1 = np.array([10, 255, 255])
 HSV_LOWER_RED_2 = np.array([160, 30, 30])
@@ -34,6 +37,8 @@ class CameraProcessor:
         self.debug = debug
         self.i = 0
         self.save_every = 10
+        self.contour_path = CONTOUR_IMAGES_FOLDER
+        self.raw_path = RAW_IMAGES_FOLDER
 
     def publish(self, message):
         self.pub.publish(message)
@@ -94,13 +99,11 @@ class CameraProcessor:
             self.i += 1
 
             if self.i % self.save_every == 0:
-                filename = str(rospy.get_time()) + ".jpg"
-                path = "../images/" + filename
-                cv2.imwrite(path, image)
+                filename = self.raw_path + str(rospy.get_time()) + ".jpg"
+                cv2.imwrite(filename, image)
                 cv2.drawContours(image, c, -1, (0, 255, 0), 1)
-                filename = str(rospy.get_time()) + ".jpg"
-                path = "../contour_images/" + filename
-                cv2.imwrite(path, image)
+                filename = self.contour_path + str(rospy.get_time()) + ".jpg"
+                cv2.imwrite(filename, image)
 
         return shift # distance between the center of the image and the center of the red light
 
