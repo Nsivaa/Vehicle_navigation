@@ -11,6 +11,8 @@ All the parameters used by the node are fetched by the .yaml file in the ```conf
 The default publishing rate is 20, to match the camera framerate, which was found using the ``` {.bash} rostopic hz ``` command. 
 
 *RUNNING*
+
+
 To run the package, use the following commands:
 
 - Run the catkin setup script for every terminal instance
@@ -39,6 +41,6 @@ To run the package, use the following commands:
   ```
 
 - Run the launch file
-``` {.bash}
-roslaunch navigation navigation.launch 
-```
+    ``` {.bash}
+    roslaunch navigation navigation.launch 
+    ```
