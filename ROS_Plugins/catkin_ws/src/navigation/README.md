@@ -16,6 +16,10 @@ The default publishing rate is 20, to match the camera framerate, which was foun
 
 To run the package, use the following commands:
 
+- Setup the catkin environment (in the ```catkin_ws``` folder)
+  ``` {.bash}
+    catkin_make
+  ```
 - Run the catkin setup script **for every terminal instance**
   ``` {.bash}
     source catkin_ws/devel/setup.bash
