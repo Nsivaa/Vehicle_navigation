@@ -6,6 +6,9 @@ from navigation.msg import img_result
 import math 
 
 X_SHIFT_EPSILON = rospy.get_param("navigation/x_shift_epsilon") # error tolerance for x_shift
+RATE = rospy.get_param("navigation/rate")
+FORWARD_VELOCITY = rospy.get_param("navigation/forward_vel")
+SPIN_VELOCITY = rospy.get_param("navigation/spin_vel")
 
 
 class VelocityPublisher:
@@ -33,12 +36,12 @@ class VelocityPublisher:
         shift = data.shift
 
         if red_detected == 'no': # no red light found
-            return Twist(Vector3(0, 0, 0), Vector3(0, 0, 3)) # turn left
+            return Twist(Vector3(0, 0, 0), Vector3(0, 0, SPIN_VELOCITY)) # turn left
         
         rospy.loginfo(f"shift: {shift}")
 
         if abs(shift) < X_SHIFT_EPSILON:
-            return Twist(Vector3(1, 0, 0), Vector3(0, 0, 0)) # move forward
+            return Twist(Vector3(FORWARD_VELOCITY, 0, 0), Vector3(0, 0, 0)) # move forward
         
         if shift > 0:
             vel = -math.log(shift, 10) # log function to slow down as we get closer to the center
@@ -54,4 +57,4 @@ def process(rate):
     rospy.spin()
 
 if __name__ == '__main__':
-    process(rate = 20) # rate chosen to match the camera's frame rate
+    process(rate = RATE) # rate chosen to match the camera's frame rate
