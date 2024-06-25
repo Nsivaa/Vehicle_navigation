@@ -8,7 +8,7 @@ The second node, **vel_publisher**, reads the result from the ```img_result``` t
 
 All the parameters used by the node are fetched by the *.yaml* file in the ```config/``` directory. 
 
-The default publishing rate is 20, to match the camera framerate, which was found using the ``` {.bash} rostopic hz ``` command. 
+The default publishing rate is 20, to match the camera framerate, which was found using the ``` rostopic hz ``` command. 
 
 
 ## *RUNNING*
