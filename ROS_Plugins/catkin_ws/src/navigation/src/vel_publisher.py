@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist, Vector3
 from navigation.msg import img_result
 import math 
 
-X_SHIFT_EPSILON = 20 # error tolerance for x_shift
+X_SHIFT_EPSILON = rospy.get_param("navigation/x_shift_epsilon") # error tolerance for x_shift
 
 
 class VelocityPublisher:

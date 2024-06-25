@@ -2,26 +2,26 @@
 
 import rospy
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import Twist
 from navigation.msg import img_result
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
 import sys
 
-# Constants
-DEBUG_FOLDER = "./debug/"
-RAW_IMAGES_FOLDER = DEBUG_FOLDER + "raw_images/"
-CONTOUR_IMAGES_FOLDER = DEBUG_FOLDER + "contour_images/"
-HSV_LOWER_RED_1 = np.array([0, 30, 30])
-HSV_UPPER_RED_1 = np.array([10, 255, 255])
-HSV_LOWER_RED_2 = np.array([160, 30, 30])
-HSV_UPPER_RED_2 = np.array([180, 255, 255])
-IMAGE_WIDTH = 320
-IMAGE_HEIGHT = 240
+# retrieve parameters from the ROS parameter server
+RATE = rospy.get_param("navigation/rate")
+DEBUG_FOLDER = rospy.get_param("navigation/debug_folder")
+RAW_IMAGES_FOLDER = DEBUG_FOLDER + rospy.get_param("navigation/raw_images_folder")
+CONTOUR_IMAGES_FOLDER = DEBUG_FOLDER + rospy.get_param("navigation/contour_images_folder")
+HSV_LOWER_RED_1 = rospy.get_param("navigation/hsv_lower_red_1")
+HSV_UPPER_RED_1 = rospy.get_param("navigation/hsv_upper_red_1")
+HSV_LOWER_RED_2 = rospy.get_param("navigation/hsv_lower_red_2")
+HSV_UPPER_RED_2 = rospy.get_param("navigation/hsv_upper_red_2")
+IMAGE_WIDTH = rospy.get_param("navigation/image_width")
+IMAGE_HEIGHT = rospy.get_param("navigation/image_height")
+MIN_CONTOUR_AREA = rospy.get_param("navigation/min_contour_area") # area of red logo next to camera is around 80
 IMAGE_X_CENTER = int(IMAGE_WIDTH / 2)
 IMAGE_Y_CENTER = int(IMAGE_HEIGHT / 2)
-SMALL_CONTOUR_AREA = 100.0 # area of red logo next to camera is around 80
 
 class CameraProcessor:
     
@@ -60,14 +60,14 @@ class CameraProcessor:
         red_detected = "no"
         shift = 0
         # Create masks for the red color
-        mask1 = cv2.inRange(hsv_image, HSV_LOWER_RED_1, HSV_UPPER_RED_1)
-        mask2 = cv2.inRange(hsv_image, HSV_LOWER_RED_2, HSV_UPPER_RED_2)
+        mask1 = cv2.inRange(hsv_image, np.array(HSV_LOWER_RED_1), np.array(HSV_UPPER_RED_1))
+        mask2 = cv2.inRange(hsv_image, np.array(HSV_LOWER_RED_2),np.array( HSV_UPPER_RED_2))
         mask_red = cv2.bitwise_or(mask1, mask2)
         contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         try:
             c = max(contours, key = cv2.contourArea) # largest contour 
             area = cv2.contourArea(c)
-            if area < SMALL_CONTOUR_AREA:
+            if area < MIN_CONTOUR_AREA:
                 return red_detected, shift
             else:
                 red_detected = "yes"
@@ -110,6 +110,8 @@ def add_text(img, text):
     return img
 
 if __name__ == '__main__':
+
+    rate = rospy.get_param("navigation/rate")
     debug = False
     if len(sys.argv) > 1:
         if sys.argv[1] == "--debug" or sys.argv[1] == "-d":
@@ -117,4 +119,4 @@ if __name__ == '__main__':
         else:
             print("Invalid argument. Running without debug mode.")
 
-    process(rate = 20, debug = debug) # rate chosen to match the camera's frame rate
+    process(rate = RATE, debug = debug) # rate chosen to match the camera's frame rate

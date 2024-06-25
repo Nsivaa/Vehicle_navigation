@@ -1,0 +1,24 @@
+contour_images_folder: contour_images/
+debug_folder: ./debug/
+hsv_lower_red_1:
+- 0
+- 30
+- 30
+hsv_lower_red_2:
+- 160
+- 30
+- 30
+hsv_upper_red_1:
+- 10
+- 255
+- 255
+hsv_upper_red_2:
+- 10
+- 255
+- 255
+image_height: 240
+image_width: 320
+min_contour_area: 100.0
+rate: 20
+raw_images_folder: raw_images/
+x_shift_epsilon: 20
