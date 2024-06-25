@@ -16,7 +16,7 @@ The default publishing rate is 20, to match the camera framerate, which was foun
 
 To run the package, use the following commands:
 
-- Run the catkin setup script for every terminal instance
+- Run the catkin setup script **for every terminal instance**
   ``` {.bash}
     source catkin_ws/devel/setup.bash
   ```
@@ -31,17 +31,17 @@ To run the package, use the following commands:
   rosrun gazebo_ros gzserver --verbose <PATH TO world sdf file>
   ```
 
-- Run the gazebo client in a new terminal instance
+- Run the gazebo client **in a new terminal instance**
   ``` {.bash}
   gzclient --verbose 
   ```
 
-- Run the SMACH State Machines that switch the lights from blue to red (and vice-versa) in a new terminal instance.
+- Run the SMACH State Machines that switch the lights from blue to red (and vice-versa) **in a new terminal instance**.
   ``` {.bash}
   python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
   ```
 
-- Run the launch file
+- Run the launch file **in a new terminal instance**
     ``` {.bash}
     roslaunch navigation navigation.launch 
     ```
