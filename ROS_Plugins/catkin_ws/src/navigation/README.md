@@ -51,7 +51,7 @@ To run the package, use the following commands:
     ```
   
   ### Roslaunch Arguments
-  ``` [arg] ``` can be passed to override the following ROS parameters (they are set to false by default):
-  - ``` verbose := True ```: prints messages in execution logs
-  - ``` debug := True ```: save a copy of the camera images (one every 10) in the ``` /debug ``` folder, both raw and with the detected contour drawn on top. 
+  ``` [args] ``` can be passed to override the following ROS parameters (they are set to False by default):
+  - ``` verbose:=True ```: prints messages in execution logs
+  - ``` debug:=True ```: save a copy of the camera images (one every 10) in the ``` /debug ``` folder, both raw and with the detected contour drawn on top. 
 
