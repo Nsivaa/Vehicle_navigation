@@ -45,7 +45,13 @@ To run the package, use the following commands:
   python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
   ```
 
-- Run the launch file **in a new terminal instance**
+- Run the launch file **in a new terminal instance**.  
     ``` {.bash}
-    roslaunch navigation navigation.launch 
+    roslaunch navigation navigation.launch [args]
     ```
+  
+  ### Roslaunch Arguments
+  ``` [arg] ``` can be passed to override the following ROS parameters (they are set to false by default):
+  - ``` verbose := True ```: print information about messages as sent/received (velocity, red detected...)
+  - ``` debug := True ```: save a copy of the camera images (one every 10) in the ``` /debug ``` folder, both raw and with the detected contour drawn on top. 
+

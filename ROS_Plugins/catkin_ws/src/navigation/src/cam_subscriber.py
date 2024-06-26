@@ -6,7 +6,6 @@ from navigation.msg import img_result
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
-import os 
 import rospkg
 
 # retrieve parameters from the ROS parameter server
@@ -45,7 +44,6 @@ class CameraProcessor:
     def publish(self, message):
         self.pub.publish(message)
         rospy.loginfo(message)
-        rospy.loginfo(self.debug)
         self.rate.sleep()   
 
     def callback(self, data):
