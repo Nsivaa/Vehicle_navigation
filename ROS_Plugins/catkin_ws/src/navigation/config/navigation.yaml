@@ -1,5 +1,5 @@
 navigation/contour_images_folder: contour_images/
-navigation/debug_folder: ./debug/
+navigation/debug_folder: /debug/
 navigation/hsv_lower_red_1:
 - 0
 - 30

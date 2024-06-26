@@ -6,10 +6,12 @@ from navigation.msg import img_result
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
-import sys
+import os 
+import rospkg
 
 # retrieve parameters from the ROS parameter server
 RATE = rospy.get_param("navigation/rate")
+DEBUG = rospy.get_param("navigation/debug")
 DEBUG_FOLDER = rospy.get_param("navigation/debug_folder")
 RAW_IMAGES_FOLDER = DEBUG_FOLDER + rospy.get_param("navigation/raw_images_folder")
 CONTOUR_IMAGES_FOLDER = DEBUG_FOLDER + rospy.get_param("navigation/contour_images_folder")
@@ -36,12 +38,14 @@ class CameraProcessor:
         self.debug = debug
         self.i = 0
         self.save_every = 10
-        self.contour_path = CONTOUR_IMAGES_FOLDER
-        self.raw_path = RAW_IMAGES_FOLDER
+        self.package_path = rospkg.RosPack().get_path('navigation')
+        self.contour_path = self.package_path + CONTOUR_IMAGES_FOLDER
+        self.raw_path = self.package_path + RAW_IMAGES_FOLDER
 
     def publish(self, message):
         self.pub.publish(message)
         rospy.loginfo(message)
+        rospy.loginfo(self.debug)
         self.rate.sleep()   
 
     def callback(self, data):
@@ -88,6 +92,7 @@ class CameraProcessor:
 
             if self.i % self.save_every == 0:
                 filename = self.raw_path + str(rospy.get_time()) + ".jpg"
+                rospy.loginfo(filename)
                 cv2.imwrite(filename, image)
                 cv2.drawContours(image, c, -1, (0, 255, 0), 1)
                 filename = self.contour_path + str(rospy.get_time()) + ".jpg"
@@ -111,9 +116,7 @@ def add_text(img, text):
 
 if __name__ == '__main__':
 
-    rate = rospy.get_param("navigation/rate")
-    debug = rospy.get_param("navigation/debug")
-    if debug != True and debug != False:
+    if DEBUG != True and DEBUG != False:
         rospy.logwarn("Invalid argument. Running without debug mode.")
-        debug = False
-    process(rate = RATE, debug = debug) # rate chosen to match the camera's frame rate
+        DEBUG = False
+    process(rate = RATE, debug = DEBUG) # rate chosen to match the camera's frame rate
