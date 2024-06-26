@@ -112,11 +112,8 @@ def add_text(img, text):
 if __name__ == '__main__':
 
     rate = rospy.get_param("navigation/rate")
-    debug = False
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "--debug" or sys.argv[1] == "-d":
-            debug = True
-        else:
-            print("Invalid argument. Running without debug mode.")
-
+    debug = rospy.get_param("navigation/debug")
+    if debug != True and debug != False:
+        rospy.logwarn("Invalid argument. Running without debug mode.")
+        debug = False
     process(rate = RATE, debug = debug) # rate chosen to match the camera's frame rate
