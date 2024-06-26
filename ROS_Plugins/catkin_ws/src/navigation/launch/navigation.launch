@@ -4,4 +4,6 @@
 <rosparam command="load" file="$(find navigation)/config/navigation.yaml" />
 <arg name="debug" default="False"/>
 <param name="navigation/debug" value="$(arg debug)"/>
+<arg name="verbose" default="False"/>
+<param name="navigation/verbose" value="$(arg verbose)"/>
 </launch>

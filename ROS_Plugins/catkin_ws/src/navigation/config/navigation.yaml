@@ -25,3 +25,4 @@ navigation/x_shift_epsilon: 20
 navigation/spin_vel: 3
 navigation/forward_vel: 1
 navigation/debug: false
+navigation/verbose: false

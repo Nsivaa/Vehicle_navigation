@@ -11,6 +11,7 @@ import rospkg
 # retrieve parameters from the ROS parameter server
 RATE = rospy.get_param("navigation/rate")
 DEBUG = rospy.get_param("navigation/debug")
+VERBOSE = rospy.get_param("navigation/verbose")
 DEBUG_FOLDER = rospy.get_param("navigation/debug_folder")
 RAW_IMAGES_FOLDER = DEBUG_FOLDER + rospy.get_param("navigation/raw_images_folder")
 CONTOUR_IMAGES_FOLDER = DEBUG_FOLDER + rospy.get_param("navigation/contour_images_folder")
@@ -26,24 +27,27 @@ IMAGE_Y_CENTER = int(IMAGE_HEIGHT / 2)
 
 class CameraProcessor:
     
-    def __init__(self, rate, debug):
+    def __init__(self, rate, debug, verbose):
         self.bridge = CvBridge()
         rospy.init_node('cam_subscriber', anonymous = True)
-
-        # we don't need queues since we only care about the most recent data
-        self.pub = rospy.Publisher('/img_result', img_result, queue_size=1)
-        self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
-        self.rate = rospy.Rate(rate)
+        rospy.loginfo("CameraProcessor initialized")
         self.debug = debug
         self.i = 0
         self.save_every = 10
         self.package_path = rospkg.RosPack().get_path('navigation')
         self.contour_path = self.package_path + CONTOUR_IMAGES_FOLDER
         self.raw_path = self.package_path + RAW_IMAGES_FOLDER
-
+        self.verbose = verbose
+        # we don't need queues since we only care about the most recent data
+        self.pub = rospy.Publisher('/img_result', img_result, queue_size=1)
+        self.sub = rospy.Subscriber("/husky_model/husky/camera", Image, self.callback, queue_size=1)
+        self.rate = rospy.Rate(rate)
+        rospy.loginfo("Running...")
+        
     def publish(self, message):
         self.pub.publish(message)
-        rospy.loginfo(message)
+        if self.verbose:
+            rospy.loginfo(message)
         self.rate.sleep()   
 
     def callback(self, data):
@@ -90,7 +94,6 @@ class CameraProcessor:
 
             if self.i % self.save_every == 0:
                 filename = self.raw_path + str(rospy.get_time()) + ".jpg"
-                rospy.loginfo(filename)
                 cv2.imwrite(filename, image)
                 cv2.drawContours(image, c, -1, (0, 255, 0), 1)
                 filename = self.contour_path + str(rospy.get_time()) + ".jpg"
@@ -98,8 +101,8 @@ class CameraProcessor:
 
         return red_detected, shift # distance between the center of the image and the center of the red light
 
-def process(rate, debug):
-    cp = CameraProcessor(rate, debug)
+def process(rate, debug, verbose):
+    cp = CameraProcessor(rate, debug, verbose)
     rospy.spin()
 
 def add_text(img, text):
@@ -117,4 +120,4 @@ if __name__ == '__main__':
     if DEBUG != True and DEBUG != False:
         rospy.logwarn("Invalid argument. Running without debug mode.")
         DEBUG = False
-    process(rate = RATE, debug = DEBUG) # rate chosen to match the camera's frame rate
+    process(rate = RATE, debug = DEBUG, verbose = VERBOSE) # rate chosen to match the camera's frame rate
