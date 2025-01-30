@@ -1,5 +1,3 @@
-
-
 **INSTALLATION**
 
 - Copy the content of the Models directory to $HOME/.gazebo/models (create it if necessary)
@@ -14,17 +12,6 @@ sudo apt-get install ros-noetic-gazebo-ros-pkgs
   ```
 **RUNNING**
 
-- Run the catkin setup script for every terminal instance
-  ``` {.bash}
-    source catkin_ws/devel/setup.bash
-  ```
-
-- Run the execute script
-  ``` {.bash}
-    source execute_master.bash
-  ```
-Or, run the commands separately:
-    
 1. Start roscore
   ``` {.bash}
   roscore & sleep 1
@@ -44,11 +31,6 @@ Or, run the commands separately:
   ``` {.bash}
   python3 -m sm.lights_switcher # ctrl-c to terminate the scripts
   ```
-- Run the cam_publisher node in a new terminal instance. Add -d or --debug flag at the end for debug mode: it will save (one every ten) images in the "debug" folder, in the navigation package directory, in both unprocessed and "contoured" version. 
-  ``` {.bash}
-    rosrun navigation cam_subscriber.py [mode]
-  ```
-
 
 **GOAL**
 
@@ -58,3 +40,4 @@ Implement one (or more) ROS Node(s) to control the robot, its goal is to navigat
 
 As soon as the robot approaches a working lamp post, its light switches to blue and the next one switches to red. 
 
+The repository contains a ROS package that implements a solution (ROS_Plugins/catkin_ws/src/navigation). Refer to its README file for info.
